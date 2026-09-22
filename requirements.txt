@@ -1,0 +1,11 @@
+# Python Dependencies for Dolomites Alta Via 1 Data Processing
+#
+# Minimum requirement: Python 3.8+
+#
+# Note: The data pipeline scripts (generate_hike_data.py and create_dolomites_kmz.py)
+# rely exclusively on Python standard library modules:
+#   - xml.etree.ElementTree (GPX XML parsing & KML structure)
+#   - json (hike_data.json generation)
+#   - math, os, glob, zipfile, datetime
+#
+# No external pip packages are required to run the scripts.

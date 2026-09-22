@@ -1,0 +1,2 @@
+# This file ensures the public/ directory is tracked by Git
+# hike_data.json is generated locally and ignored to protect personal hike data.

@@ -1,0 +1,959 @@
+/* ==========================================================================
+   Alta Via 1 Dolomites 3D Flyover - Design System & Styles
+   ========================================================================== */
+
+:root {
+  /* Color Tokens */
+  --bg-dark: #060913;
+  --bg-panel: rgba(13, 19, 33, 0.75);
+  --bg-panel-hover: rgba(22, 32, 54, 0.85);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-glass-glow: rgba(0, 229, 255, 0.4);
+  
+  --text-main: #f0f4fc;
+  --text-muted: #8c9cb8;
+  --text-dim: #5c6b84;
+  
+  /* Stage Palette */
+  --stage-1: #00e5ff;
+  --stage-2: #00e676;
+  --stage-3: #ffd600;
+  --stage-4: #ff6d00;
+  --stage-5: #ff1744;
+  --stage-6: #d500f9;
+  
+  /* Accent Gradients */
+  --grad-primary: linear-gradient(135deg, #00e5ff 0%, #0077ff 100%);
+  --grad-play: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+  --grad-gold: linear-gradient(135deg, #ffd600 0%, #ff6d00 100%);
+  
+  /* Typography */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Shadows */
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-neon-cyan: 0 0 20px rgba(0, 229, 255, 0.4);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3D Map Canvas */
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Maplibre control tweaks */
+.maplibregl-ctrl-bottom-right,
+.maplibregl-ctrl-bottom-left {
+  display: none !important;
+}
+
+/* Ambient Vignette Overlay */
+.map-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.65);
+}
+
+/* Glassmorphism Panel Base */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   TOP BAR
+   ========================================================================== */
+.top-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10;
+}
+
+.trek-branding {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flag-icon {
+  font-size: 14px;
+}
+
+.brand-sub {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--stage-1);
+  text-transform: uppercase;
+}
+
+.brand-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+}
+
+/* Stage Navigation Pills */
+.stage-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 4px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stage-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stage-pill:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.stage-pill.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+/* Trek Top Summary Stats */
+.trek-summary-stats {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.stat-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+}
+
+.stat-val {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.highlight-ascent {
+  color: var(--stage-2);
+}
+
+/* ==========================================================================
+   TELEMETRY HUD (Top Left)
+   ========================================================================== */
+.telemetry-hud {
+  position: absolute;
+  top: 96px;
+  left: 16px;
+  width: 290px;
+  padding: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--stage-2);
+  box-shadow: 0 0 10px var(--stage-2);
+  animation: pulse-glow 1.5s infinite;
+}
+
+@keyframes pulse-glow {
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+.live-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--stage-2);
+}
+
+.current-stage-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.hud-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+/* Big Altitude Box */
+.hud-altitude-box {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.alt-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alt-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.alt-trend {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--stage-1);
+}
+
+.alt-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.alt-number {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  text-shadow: 0 0 24px rgba(0, 229, 255, 0.3);
+}
+
+.alt-unit {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--stage-1);
+}
+
+/* HUD Grid */
+.hud-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.hud-stat-cell {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.hud-cell-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+.hud-cell-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hud-cell-value .unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.hud-time {
+  color: var(--stage-3);
+}
+
+/* Progress Track */
+.hud-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.hud-progress-fill {
+  height: 100%;
+  background: var(--grad-primary);
+  border-radius: 2px;
+  transition: width 0.15s linear;
+}
+
+/* Landmark banner */
+.hud-landmark-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
+}
+
+.landmark-icon {
+  font-size: 14px;
+}
+
+.landmark-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   CAMERA MODE BADGE (Top Right)
+   ========================================================================== */
+.camera-badge {
+  position: absolute;
+  top: 96px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  z-index: 10;
+}
+
+.cam-icon {
+  font-size: 16px;
+}
+
+.cam-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--stage-1);
+}
+
+/* ==========================================================================
+   BOTTOM DOCK (Elevation Profile & Controls)
+   ========================================================================== */
+.bottom-dock {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  padding: 14px 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Elevation Profile Container */
+.elevation-profile-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.profile-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.elevation-chart-container {
+  width: 100%;
+  height: 90px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.elevation-chart-container svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Controls Row */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.playback-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Generic Button Control */
+.btn-ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--border-glass);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ctrl:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-ctrl:active {
+  transform: translateY(0);
+}
+
+.btn-play {
+  background: var(--grad-play);
+  color: #03141f;
+  font-weight: 800;
+  padding: 9px 20px;
+  border: none;
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.35);
+}
+
+.btn-play:hover {
+  box-shadow: 0 0 28px rgba(0, 230, 118, 0.55);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  padding: 8px 12px;
+}
+
+/* Speed Controls */
+.speed-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.speed-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  margin-right: 4px;
+}
+
+.speed-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.speed-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.speed-btn.active {
+  color: #060913;
+  background: var(--stage-1);
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+}
+
+/* Camera Mode Controls */
+.mode-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-mode.active {
+  background: rgba(0, 229, 255, 0.18);
+  border-color: var(--stage-1);
+  color: var(--stage-1);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+}
+
+/* Camera Angle Controls */
+.angle-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.angle-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  margin-right: 4px;
+}
+
+.angle-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.angle-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.angle-btn.active {
+  color: #060913;
+  background: var(--stage-2);
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.35);
+}
+
+.extra-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   GPS BEACON & 3D MARKERS
+   ========================================================================== */
+.gps-beacon-container {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.beacon-pulse-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--stage-1);
+  box-shadow: 0 0 16px var(--stage-1);
+  animation: beacon-wave 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.beacon-pulse-ring-delayed {
+  animation-delay: 0.6s;
+}
+
+@keyframes beacon-wave {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.beacon-core {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--stage-1);
+  box-shadow: 0 0 20px #ffffff, 0 0 35px var(--stage-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.beacon-arrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid #060913;
+  transform-origin: center;
+  transition: transform 0.1s linear;
+}
+
+/* Milestone 3D Pin */
+.milestone-pin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(13, 19, 33, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.milestone-pin:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #ffffff;
+  transform: translateY(-2px) scale(1.05);
+}
+
+.milestone-icon {
+  font-size: 13px;
+}
+
+.milestone-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.milestone-alt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--stage-3);
+}
+
+/* Elevation Chart Tooltip & Scrubber Line */
+.chart-scrubber-line {
+  stroke: #ffffff;
+  stroke-width: 2px;
+  stroke-dasharray: 2 2;
+}
+
+.chart-scrubber-circle {
+  fill: #ffffff;
+  stroke: var(--stage-1);
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 6px var(--stage-1));
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .stage-nav { display: none; }
+  .telemetry-hud { width: calc(100% - 32px); max-width: 320px; }
+  .controls-row { flex-wrap: wrap; }
+}
+
+/* Setup Overlay (when hike_data.json is missing on fresh clone) */
+.setup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 9, 19, 0.88);
+  backdrop-filter: blur(16px);
+  padding: 24px;
+}
+
+.setup-modal {
+  max-width: 640px;
+  width: 100%;
+  padding: 36px 32px;
+  border-radius: 20px;
+  background: rgba(13, 19, 33, 0.95);
+  border: 1px solid var(--border-glass-glow);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 229, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.setup-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.setup-icon {
+  font-size: 32px;
+}
+
+.setup-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.setup-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.setup-desc code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  color: var(--stage-1);
+}
+
+.setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  text-align: left;
+  margin: 8px 0;
+}
+
+@media (max-width: 600px) {
+  .setup-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.setup-card {
+  background: rgba(22, 32, 54, 0.6);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.setup-card .card-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--stage-2);
+  letter-spacing: 1px;
+}
+
+.setup-card h3 {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.setup-card p {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.setup-card .code-block {
+  background: rgba(6, 9, 19, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: auto;
+}
+
+.setup-card code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--stage-1);
+  user-select: text;
+}
+
+.setup-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.setup-footer .pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--stage-2);
+  box-shadow: 0 0 8px var(--stage-2);
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+.setup-upload-btn {
+  background: var(--grad-primary);
+  color: #060913;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.setup-upload-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-neon-cyan);
+}
+
+.gpx-loading-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: rgba(13, 19, 33, 0.95);
+  border: 1px solid var(--stage-1);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 255, 0.4);
+  animation: pulse-glow 1.5s infinite ease-in-out;
+}
+
+

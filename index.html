@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alta Via 1 • Dolomites 3D Interactive Flyover</title>
+  <meta name="description" content="Cinematic 3D interactive flyover of the complete 6-day Alta Via 1 hike in the Italian Dolomites.">
+  
+  <!-- Modern Typography: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- MapLibre GL CSS -->
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  
+  <!-- Application CSS -->
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <!-- 3D Map Container -->
+  <div id="map"></div>
+
+  <!-- Ambient Cinematic Vignette -->
+  <div class="map-vignette"></div>
+
+  <!-- TOP BAR: Navigation & Stage Selector -->
+  <header class="top-bar glass-panel" id="top-bar">
+    <div class="trek-branding">
+      <div class="brand-badge">
+        <span class="flag-icon">🏔️</span>
+        <span class="brand-sub">DOLOMITI • ALTA VIA 1</span>
+      </div>
+      <h1 class="brand-title">Lago di Braies → Passo Duran</h1>
+    </div>
+
+    <!-- Stage Selector Pills (dynamically populated) -->
+    <nav class="stage-nav" id="stage-nav" aria-label="Hike Stages"></nav>
+
+    <!-- Top Stats -->
+    <div class="trek-summary-stats">
+      <div class="stat-item">
+        <span class="stat-label">TOTAL DISTANCE</span>
+        <span class="stat-val" id="total-dist-label">93.8 km</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">TOTAL ASCENT</span>
+        <span class="stat-val highlight-ascent" id="total-ascent-label">+7,654 m</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TELEMETRY HUD: Real-time Live Hiker Stats (Top Left) -->
+  <aside class="telemetry-hud glass-panel" id="telemetry-hud">
+    <div class="hud-header">
+      <div class="live-indicator">
+        <span class="live-pulse"></span>
+        <span class="live-text" id="hud-status">FLYOVER ACTIVE</span>
+      </div>
+      <div class="current-stage-tag" id="hud-stage-tag" style="color: #00e5ff; border-color: rgba(0, 229, 255, 0.3);">
+        DAY 1
+      </div>
+    </div>
+
+    <div class="hud-title" id="hud-stage-name">
+      Lago di Braies → Rifugio Pederü
+    </div>
+
+    <!-- Big Altitude Counter -->
+    <div class="hud-altitude-box">
+      <div class="alt-label-row">
+        <span class="alt-label">CURRENT ALTITUDE</span>
+        <span class="alt-trend" id="hud-alt-trend">↗ CLIMBING</span>
+      </div>
+      <div class="alt-value-row">
+        <span class="alt-number" id="hud-altitude">1,496</span>
+        <span class="alt-unit">m</span>
+      </div>
+    </div>
+
+    <!-- Progress Grid -->
+    <div class="hud-grid">
+      <div class="hud-stat-cell">
+        <div class="hud-cell-label">DISTANCE</div>
+        <div class="hud-cell-value" id="hud-distance">0.0 <span class="unit">km</span></div>
+      </div>
+      <div class="hud-stat-cell">
+        <div class="hud-cell-label">TOTAL TREK</div>
+        <div class="hud-cell-value" id="hud-progress-pct">0 <span class="unit">%</span></div>
+      </div>
+      <div class="hud-stat-cell">
+        <div class="hud-cell-label">SPEED</div>
+        <div class="hud-cell-value" id="hud-speed">4.8 <span class="unit">km/h</span></div>
+      </div>
+      <div class="hud-stat-cell">
+        <div class="hud-cell-label">RECORDED TIME</div>
+        <div class="hud-cell-value hud-time" id="hud-timestamp">08:40</div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="hud-progress-track">
+      <div class="hud-progress-fill" id="hud-progress-bar" style="width: 0%;"></div>
+    </div>
+
+    <!-- Proximity Alert / Landmark -->
+    <div class="hud-landmark-row" id="hud-landmark-box">
+      <span class="landmark-icon">📍</span>
+      <span class="landmark-name" id="hud-landmark-name">Pragser Wildsee (Start)</span>
+    </div>
+  </aside>
+
+  <!-- CAMERA MODE BADGE (Top Right) -->
+  <div class="camera-badge glass-panel" id="camera-badge">
+    <span class="cam-icon" id="cam-icon">🚁</span>
+    <span class="cam-label" id="cam-label">DRONE CHASE CAMERA</span>
+  </div>
+
+  <!-- BOTTOM DOCK: Elevation Profile + Controls -->
+  <footer class="bottom-dock glass-panel" id="bottom-dock">
+    <!-- Elevation Profile Section -->
+    <div class="elevation-profile-wrapper">
+      <div class="profile-header">
+        <span class="profile-title">📈 ELEVATION PROFILE &amp; TRAIL SCRUBBER</span>
+        <span class="profile-hint">Click or drag anywhere to seek</span>
+      </div>
+      <div id="elevation-chart-container" class="elevation-chart-container">
+        <!-- SVG injected dynamically -->
+      </div>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="controls-row">
+      <!-- Playback Actions -->
+      <div class="playback-controls">
+        <button class="btn-ctrl btn-play" id="btn-play" title="Play / Pause (Space)">
+          <span class="ctrl-icon" id="play-icon">▶</span>
+          <span class="ctrl-text" id="play-text">PLAY FLYOVER</span>
+        </button>
+        <button class="btn-ctrl btn-secondary" id="btn-restart" title="Restart (R)">
+          <span class="ctrl-icon">↺</span>
+        </button>
+      </div>
+
+      <!-- Speed Display (Hard-set to 7.5x) -->
+      <div class="speed-controls" id="speed-controls">
+        <span class="speed-label">SPEED:</span>
+        <button class="speed-btn active" data-speed="7.5" style="cursor: default;" title="Speed hard-set to 7.5x">7.5x</button>
+      </div>
+
+      <!-- Camera Mode Switcher -->
+      <div class="mode-controls">
+        <button class="btn-ctrl btn-mode active" id="btn-chase-mode" title="Lock camera behind moving hiker">
+          <span class="ctrl-icon">🚁</span> Chase
+        </button>
+        <button class="btn-ctrl btn-mode" id="btn-free-mode" title="Free orbit and exploration">
+          <span class="ctrl-icon">🧭</span> Free Orbit
+        </button>
+      </div>
+
+      <!-- Camera Angle Presets -->
+      <div class="angle-controls" id="angle-controls">
+        <span class="angle-label">ANGLE:</span>
+        <button class="angle-btn active" data-preset="cinematic" title="Elevated 3/4 drone view (52° pitch - eliminates mountain obstruction)">Cinematic</button>
+        <button class="angle-btn" data-preset="close" title="Close dynamic follow (62° pitch)">Close</button>
+        <button class="angle-btn" data-preset="vista" title="High panoramic vista (35° pitch)">Vista</button>
+      </div>
+
+      <!-- Tools -->
+      <div class="extra-tools">
+        <input type="file" id="gpx-file-input" multiple accept=".gpx" style="display:none">
+        <button class="btn-ctrl btn-secondary" id="btn-upload-gpx" title="Load Custom GPX File(s)">
+          <span class="ctrl-icon">📂</span>
+        </button>
+        <button class="btn-ctrl btn-secondary" id="btn-reset-view" title="Reset Camera View over Route">
+          <span class="ctrl-icon">🎯</span>
+        </button>
+        <button class="btn-ctrl btn-secondary" id="btn-fullscreen" title="Toggle Fullscreen (F)">
+          <span class="ctrl-icon">⛶</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Main Script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
