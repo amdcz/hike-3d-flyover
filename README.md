@@ -1,6 +1,6 @@
-# 🏔️ Dolomites Alta Via 1 — 3D Interactive Flyover Engine
+# 🏔️ 3D GPS Hike Flyover Engine
 
-A cinematic, interactive 3D web application providing dynamic flyovers, live telemetry HUD instrumentation, and synchronized elevation profiles for multi-stage hikes in the Italian Dolomites (or anywhere in the world).
+A cinematic, interactive 3D web application providing dynamic flyovers, live telemetry HUD instrumentation, and synchronized elevation profiles for GPS tracks and multi-stage hikes anywhere in the world.
 
 Built with **MapLibre GL JS**, **Vite**, raster digital elevation models (DEM), and Python trail data pipelines.
 
@@ -8,10 +8,10 @@ Built with **MapLibre GL JS**, **Vite**, raster digital elevation models (DEM), 
 
 ## ✨ Features
 
-- **Cinematic 3D Terrain**: Photorealistic 3D flyovers rendered with MapLibre GL JS, AWS terrain elevation RGB rasters, and ESRI satellite imagery.
-- **Universal Multi-Stage Trek Support**: Works with 1-day hikes, weekend loops, or multi-week expeditions.
-- **In-Browser GPX Drag & Drop**: Drop any `.gpx` file into the web app to fly immediately without any setup.
-- **Live Telemetry HUD**: Displays real-time altitude, slope trend, speed, distance completed, heading/bearing, and mountain landmark callouts.
+- **Cinematic 3D Terrain**: Photorealistic 3D flyovers rendered with MapLibre GL JS, global digital elevation models (DEM), and high-resolution satellite imagery.
+- **Universal Trail Support**: Works with single-day hikes, weekend loops, or multi-week point-to-point expeditions anywhere on Earth.
+- **In-Browser GPX Drag & Drop**: Drop any `.gpx` file directly into the web browser to start flying immediately with zero command-line setup.
+- **Live Telemetry HUD**: Real-time display of altitude, gradient trend, speed, distance completed, heading/bearing, and trail milestones.
 - **Interactive Elevation Profile**: Scrubbable elevation chart synchronized with the 3D camera position. Click or drag anywhere along the profile to jump immediately to that trail location.
 - **Google Earth Pro Package**: Includes a Python generator to build standalone `.kmz` / `.kml` tours with high-resolution paths and scenic viewpoints.
 - **Privacy-First**: No private hike recordings, personal GPS breadcrumbs, heart rates, or calendar dates are stored in the repository.
@@ -49,18 +49,18 @@ npm install
 ### Step 4: Load Your Trail Data
 Choose whichever method is easiest for you:
 
-#### Option A: Instant Demo Mode (Recommended to test immediately)
-Generate a sample 6-stage Dolomites flight route across Lago di Braies, Lagazuoi, and Passo Giau:
+#### Option A: Instant Demo Mode (Quick test)
+Generate a sample multi-stage 3D flight demonstration to test the engine immediately:
 ```bash
 python3 generate_hike_data.py --demo
 ```
 
 #### Option B: Use Your Own GPX Files
-Drop one or more `.gpx` files from any trail into the project root folder (named anything, e.g., `day_1.gpx`, `tour_du_mont_blanc.gpx`, `yosemite.gpx`) and run:
+Drop one or more `.gpx` files from any trail into the project root folder (named anything, e.g., `stage_1.gpx`, `my_hike.gpx`, `trail.gpx`) and run:
 ```bash
 python3 generate_hike_data.py
 ```
-*(The script automatically detects track names, assigns stage colors, and calculates smooth camera bearings).*
+*(The script automatically scans for `.gpx` files, detects track names, assigns stage colors, and calculates smooth camera bearings).*
 
 #### Option C: In-Browser Drag & Drop (Zero command-line data processing)
 You can skip data generation entirely! Start the app (Step 5) and simply drag & drop your `.gpx` files directly onto the browser window.
@@ -70,7 +70,7 @@ You can skip data generation entirely! Start the app (Step 5) and simply drag & 
 npm run dev
 ```
 
-Open **`http://localhost:5173`** in your browser.
+Open **`http://localhost:5173`** in your browser to experience the 3D flyover!
 
 ---
 
@@ -97,7 +97,7 @@ To generate standalone 3D flight tours for Google Earth Pro from your GPX files:
 python3 create_dolomites_kmz.py
 ```
 
-This creates `Alta_Via_1_Dolomites_Flyover.kmz` which can be opened directly in Google Earth Pro.
+This creates a standalone `.kmz` package which can be opened directly in Google Earth Pro.
 
 ---
 
